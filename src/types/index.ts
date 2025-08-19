@@ -10,5 +10,5 @@ interface CreateOrEditBrand {
 	name: string;
 	description: string;
 	altText: string;
-	logoFile: string;
+	logoFile: null | File;
 }

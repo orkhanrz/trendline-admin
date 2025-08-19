@@ -4,7 +4,7 @@ import { useRef } from "react";
 type FileInputProps = {
 	label: string;
 	name: string;
-	selectedFile: string;
+	selectedFile: string | undefined;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -38,7 +38,7 @@ export default function FileInput({
 
 			{selectedFile && (
 				<div className="flex justify-between items-center bg-blue-100 p-3 border-1 border-blue-200 rounded-full relative">
-					<p className="font-semibold">file_03.zip</p>
+					<p className="font-semibold">{selectedFile}</p>
 					<div className="text-white bg-blue-700 p-3 rounded-full absolute right-0">
 						<Trash2 size={24} />
 					</div>

@@ -1,5 +1,4 @@
 import { config } from "@/constants/config";
-import useFetch from "@/hooks/use-fetch";
 import { useEffect, useState } from "react";
 import FileInput from "../ui/file-input";
 import Input from "../ui/input";
@@ -20,7 +19,7 @@ export default function BrandForm({
 		name: "",
 		description: "",
 		altText: "",
-		logoFile: "",
+		logoFile: null,
 	});
 
 	useEffect(() => {
@@ -52,8 +51,7 @@ export default function BrandForm({
 		const file = e.target.files?.[0];
 
 		if (file) {
-			const image = URL.createObjectURL(file);
-			setBrand((prev) => ({ ...prev, logoFile: image }));
+			setBrand((prev) => ({ ...prev, logoFile: file }));
 		}
 	}
 
@@ -61,9 +59,12 @@ export default function BrandForm({
 		e.preventDefault();
 
 		const formData = new FormData();
-		Object.entries(brand).forEach((entry) =>
-			formData.set(entry[0], entry[1])
-		);
+		formData.append("name", brand.name);
+		formData.append("description", brand.description);
+		brand.altText && formData.append("altText", brand.altText);
+		brand.id && formData.append("id", brand.id);
+		brand.logoFile &&
+			formData.append("logoFile", brand.logoFile, brand.logoFile.name);
 
 		const response = await fetch(`${config.apiBaseUrl}/brands`, {
 			method: brandId ? "PUT" : "POST",
@@ -109,7 +110,7 @@ export default function BrandForm({
 			<FileInput
 				label="Logo"
 				name="logoFile"
-				selectedFile={brand.logoFile}
+				selectedFile={brand.logoFile?.name}
 				onChange={handleFileInputChange}
 			/>
 
