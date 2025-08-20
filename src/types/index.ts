@@ -12,3 +12,15 @@ interface CreateOrEditBrand {
 	altText: string;
 	logoFile: null | File;
 }
+
+interface Category {
+	id: string;
+	name: string;
+	parentCategoryId: string | null;
+}
+
+interface CreateOrEditCategory {
+	id?: string;
+	name: string;
+	parentCategoryId?: string;
+}

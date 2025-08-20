@@ -1,35 +1,30 @@
 "use client";
 import BrandForm from "@/components/form/brand-form";
-import DeleteModal from "@/components/ui/delete-modal";
-import Modal from "@/components/ui/modal";
-import NoData from "@/components/ui/no-data";
+import DeleteModal from "@/components/ui/modal/delete-modal";
+import Modal from "@/components/ui/modal/modal";
 import PageHeader from "@/components/ui/page-header";
-import Table from "@/components/ui/table";
+import NoData from "@/components/ui/table/no-data";
+import Table from "@/components/ui/table/table";
+import TableActions from "@/components/ui/table/table-actions";
 import { config } from "@/constants/config";
+import useActions from "@/hooks/use-actions";
 import useFetch from "@/hooks/use-fetch";
-import { Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
 
 const columns = ["Id", "Name", "Description", "Logo", ""];
 
 export default function BrandsPage() {
-	const [deleteItemId, setDeleteItemId] = useState<null | string>(null);
-	const [editItemId, setEditItemId] = useState<null | string>(null);
-	const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
 	const { data, refetch } = useFetch(config.apiBaseUrl + "/brands");
-
-	function openDeleteModal(itemId: string) {
-		setDeleteItemId(itemId);
-	}
-
-	function openEditModal(itemId: string) {
-		setEditItemId(itemId);
-	}
-
-	function toggleAddModal() {
-		setIsAddModalOpen((prev) => !prev);
-	}
+	const {
+		deleteItemId,
+		editItemId,
+		isAddModalOpen,
+		openDeleteModal,
+		openEditModal,
+		toggleAddModal,
+		setDeleteItemId,
+		setEditItemId,
+	} = useActions();
 
 	async function handleDelete() {
 		const response = await fetch(
@@ -65,21 +60,11 @@ export default function BrandsPage() {
 						) : (
 							""
 						),
-						<div className="flex gap-2">
-							<button onClick={() => openDeleteModal(item.id)}>
-								<Trash2
-									className="text-red-500 cursor-pointer"
-									size={18}
-								/>
-							</button>
-
-							<button onClick={() => openEditModal(item.id)}>
-								<Pencil
-									className="text-blue-600 cursor-pointer"
-									size={18}
-								/>
-							</button>
-						</div>,
+						<TableActions
+							itemId={item.id}
+							onDelete={openDeleteModal}
+							onEdit={openEditModal}
+						/>,
 					])}
 				/>
 			) : (

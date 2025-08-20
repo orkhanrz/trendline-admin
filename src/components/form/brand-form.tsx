@@ -1,7 +1,7 @@
 import { config } from "@/constants/config";
 import { useEffect, useState } from "react";
-import FileInput from "../ui/file-input";
-import Input from "../ui/input";
+import FileInput from "../ui/input/file-input";
+import Input from "../ui/input/input";
 
 type BrandFormProps = {
 	brandId?: string;
