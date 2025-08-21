@@ -24,7 +24,7 @@ export default function SelectInput({
 		setIsOpen((prev) => !prev);
 	}
 
-	const selectedParentName = options.find(
+	const selectedOptionName = options.find(
 		(option) => option.id == value
 	)?.name;
 
@@ -40,7 +40,7 @@ export default function SelectInput({
 				}`}
 				onClick={toggleSelect}
 			>
-				<p>{selectedParentName || placeHolder}</p>
+				<p>{selectedOptionName || placeHolder}</p>
 
 				<button type="button">
 					<ChevronDown

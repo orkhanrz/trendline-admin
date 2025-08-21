@@ -15,7 +15,7 @@ export default function LoginForm() {
 		event.preventDefault();
 
 		try {
-			const response = await fetch(`${config.apiUrl}/users/login`, {
+			const response = await fetch(`${config.apiBaseUrl}/users/login`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
