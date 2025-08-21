@@ -2,6 +2,8 @@ import { config } from "@/constants/config";
 import { useEffect, useState } from "react";
 import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
+import SelectInput from "../ui/input/select-input";
+import useFetch from "@/hooks/use-fetch";
 
 type CategoryFormProps = {
 	categoryId?: string;
@@ -14,10 +16,11 @@ export default function CategoryForm({
 	refetch,
 	onClose,
 }: CategoryFormProps) {
+	const { data } = useFetch(config.apiBaseUrl + "/categories/parents");
 	const [category, setCategory] = useState<CreateOrEditCategory>({
 		id: "",
 		name: "",
-		parentCategoryId: "",
+		parentCategoryId: null,
 	});
 
 	useEffect(() => {
@@ -45,12 +48,20 @@ export default function CategoryForm({
 		setCategory((prev) => ({ ...prev, [name]: value }));
 	}
 
+	function handleParentCategoryChange(id: string) {
+		setCategory((prev) => ({ ...prev, parentCategoryId: id }));
+	}
+
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
 		const formBody = categoryId
 			? category
-			: { id: categoryId, name: category.name };
+			: {
+					id: categoryId,
+					name: category.name,
+					parentCategoryId: category.parentCategoryId,
+			  };
 
 		const response = await fetch(`${config.apiBaseUrl}/categories`, {
 			method: categoryId ? "PUT" : "POST",
@@ -75,6 +86,17 @@ export default function CategoryForm({
 				type="text"
 				value={category.name}
 				onChange={handleChange}
+			/>
+
+			<SelectInput
+				label="Parent Category Id"
+				name="parentCategoryId"
+				value={category.parentCategoryId}
+				options={data.filter(
+					(option: Category) => option.id != categoryId
+				)}
+				onSelect={handleParentCategoryChange}
+				placeHolder="Select Parent Category"
 			/>
 
 			<div className="flex justify-center gap-3 my-10">

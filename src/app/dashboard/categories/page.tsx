@@ -4,6 +4,7 @@ import CategoryForm from "@/components/form/category-form";
 import DeleteModal from "@/components/ui/modal/delete-modal";
 import Modal from "@/components/ui/modal/modal";
 import PageHeader from "@/components/ui/page-header";
+import Spinner from "@/components/ui/spinner";
 import NoData from "@/components/ui/table/no-data";
 import Table from "@/components/ui/table/table";
 import TableActions from "@/components/ui/table/table-actions";
@@ -14,7 +15,9 @@ import useFetch from "@/hooks/use-fetch";
 const columns: string[] = ["Id", "Name", "Parenty category id", ""];
 
 export default function CategoriesPage() {
-	const { data, refetch } = useFetch(config.apiBaseUrl + "/categories");
+	const { data, isLoading, refetch } = useFetch(
+		config.apiBaseUrl + "/categories"
+	);
 	const {
 		deleteItemId,
 		editItemId,
@@ -42,10 +45,9 @@ export default function CategoriesPage() {
 	return (
 		<>
 			<PageHeader title="Categories" onAdd={toggleAddModal} />
-
-			{data.length === 0 ? (
-				<NoData />
-			) : (
+			{isLoading && <Spinner />}
+			{!isLoading && data.length == 0 && <NoData />}
+			{data.length > 0 && (
 				<Table
 					columns={columns}
 					rows={data.map((item: Category) => [

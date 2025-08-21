@@ -22,5 +22,5 @@ interface Category {
 interface CreateOrEditCategory {
 	id?: string;
 	name: string;
-	parentCategoryId?: string;
+	parentCategoryId?: string | null;
 }

@@ -3,6 +3,7 @@ import BrandForm from "@/components/form/brand-form";
 import DeleteModal from "@/components/ui/modal/delete-modal";
 import Modal from "@/components/ui/modal/modal";
 import PageHeader from "@/components/ui/page-header";
+import Spinner from "@/components/ui/spinner";
 import NoData from "@/components/ui/table/no-data";
 import Table from "@/components/ui/table/table";
 import TableActions from "@/components/ui/table/table-actions";
@@ -14,7 +15,9 @@ import Image from "next/image";
 const columns = ["Id", "Name", "Description", "Logo", ""];
 
 export default function BrandsPage() {
-	const { data, refetch } = useFetch(config.apiBaseUrl + "/brands");
+	const { data, isLoading, refetch } = useFetch(
+		config.apiBaseUrl + "/brands"
+	);
 	const {
 		deleteItemId,
 		editItemId,
@@ -43,7 +46,9 @@ export default function BrandsPage() {
 		<>
 			<PageHeader title="Brands" onAdd={toggleAddModal} />
 
-			{data && data.length > 0 ? (
+			{isLoading && <Spinner />}
+			{!isLoading && data.length == 0 && <NoData />}
+			{data.length > 0 && (
 				<Table
 					columns={columns}
 					rows={data.map((item: Brand) => [
@@ -67,8 +72,6 @@ export default function BrandsPage() {
 						/>,
 					])}
 				/>
-			) : (
-				<NoData />
 			)}
 
 			{deleteItemId && (
