@@ -11,6 +11,7 @@ import TableActions from "@/components/ui/table/table-actions";
 import { config } from "@/constants/config";
 import useActions from "@/hooks/use-actions";
 import useFetch from "@/hooks/use-fetch";
+import { Category } from "@/types";
 
 const columns: string[] = ["Id", "Name", "Parenty category id", ""];
 
@@ -55,6 +56,7 @@ export default function CategoriesPage() {
 						item.name,
 						item.parentCategoryId || "",
 						<TableActions
+							key={item.id}
 							itemId={item.id}
 							onDelete={openDeleteModal}
 							onEdit={openEditModal}

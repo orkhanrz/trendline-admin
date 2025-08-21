@@ -12,7 +12,7 @@ type SidebarLinkProps = {
 
 export default function SidebarLink({ href, name, icon }: SidebarLinkProps) {
 	const pathname = usePathname();
-	let classes = pathname === href ? "bg-blue-500 text-white" : "text-black";
+	const classes = pathname === href ? "bg-blue-500 text-white" : "text-black";
 
 	return (
 		<li className={`rounded-xl mb-2 ${classes}`}>

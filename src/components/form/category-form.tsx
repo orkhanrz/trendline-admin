@@ -1,9 +1,9 @@
 import { config } from "@/constants/config";
+import useFetch from "@/hooks/use-fetch";
 import { useEffect, useState } from "react";
-import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
 import SelectInput from "../ui/input/select-input";
-import useFetch from "@/hooks/use-fetch";
+import { Category, CreateOrEditCategory } from "@/types";
 
 type CategoryFormProps = {
 	categoryId?: string;
@@ -40,7 +40,7 @@ export default function CategoryForm({
 		if (categoryId) {
 			fetchData();
 		}
-	}, []);
+	}, [categoryId]);
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = e.target;

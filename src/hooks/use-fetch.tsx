@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function useFetch(url: string) {
 	const [state, setState] = useState<{
@@ -11,32 +11,35 @@ export default function useFetch(url: string) {
 		error: null,
 	});
 
+	const fetchData = useCallback(
+		async function () {
+			try {
+				const response = await fetch(url);
+
+				if (!response.ok) {
+					console.log(response);
+					throw new Error("Failed to fetch!");
+				}
+
+				const data = await response.json();
+				setState((prev) => ({ ...prev, data: data }));
+			} catch (error) {
+				if (error instanceof Error) {
+					setState((prev) => ({
+						...prev,
+						error: error.message || "Something went wrong!",
+					}));
+				}
+			} finally {
+				setState((prev) => ({ ...prev, isLoading: false }));
+			}
+		},
+		[url]
+	);
+
 	useEffect(() => {
 		fetchData();
-	}, []);
-
-	async function fetchData() {
-		try {
-			const response = await fetch(url);
-
-			if (!response.ok) {
-				console.log(response);
-				throw new Error("Failed to fetch!");
-			}
-
-			const data = await response.json();
-			setState((prev) => ({ ...prev, data: data }));
-		} catch (error) {
-			if (error instanceof Error) {
-				setState((prev) => ({
-					...prev,
-					error: error.message || "Something went wrong!",
-				}));
-			}
-		} finally {
-			setState((prev) => ({ ...prev, isLoading: false }));
-		}
-	}
+	}, [fetchData]);
 
 	return {
 		data: state.data,

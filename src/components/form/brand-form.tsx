@@ -2,6 +2,7 @@ import { config } from "@/constants/config";
 import { useEffect, useState } from "react";
 import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
+import { CreateOrEditBrand } from "@/types";
 
 type BrandFormProps = {
 	brandId?: string;
@@ -39,7 +40,7 @@ export default function BrandForm({
 		if (brandId) {
 			fetchData();
 		}
-	}, []);
+	}, [brandId]);
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = e.target;

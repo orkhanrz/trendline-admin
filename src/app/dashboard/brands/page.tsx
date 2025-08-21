@@ -10,6 +10,7 @@ import TableActions from "@/components/ui/table/table-actions";
 import { config } from "@/constants/config";
 import useActions from "@/hooks/use-actions";
 import useFetch from "@/hooks/use-fetch";
+import { Brand } from "@/types";
 import Image from "next/image";
 
 const columns = ["Id", "Name", "Description", "Logo", ""];
@@ -66,6 +67,7 @@ export default function BrandsPage() {
 							""
 						),
 						<TableActions
+							key={item.id}
 							itemId={item.id}
 							onDelete={openDeleteModal}
 							onEdit={openEditModal}

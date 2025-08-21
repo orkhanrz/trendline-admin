@@ -1,11 +1,11 @@
-interface Brand {
+export interface Brand {
 	id: string;
 	name: string;
 	description: string;
 	logoUrl: string;
 }
 
-interface CreateOrEditBrand {
+export interface CreateOrEditBrand {
 	id?: string;
 	name: string;
 	description: string;
@@ -13,13 +13,13 @@ interface CreateOrEditBrand {
 	logoFile: null | File;
 }
 
-interface Category {
+export interface Category {
 	id: string;
 	name: string;
 	parentCategoryId: string | null;
 }
 
-interface CreateOrEditCategory {
+export interface CreateOrEditCategory {
 	id?: string;
 	name: string;
 	parentCategoryId?: string | null;

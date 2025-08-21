@@ -56,7 +56,7 @@ export default function LoginForm() {
 			/>
 
 			<input
-				// type="password"
+				type="password"
 				id="password"
 				name="password"
 				placeholder="Password"
