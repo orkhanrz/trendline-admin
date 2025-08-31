@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 
-export default function useFetch(url: string) {
+export default function useFetch<T>(url: string) {
 	const [state, setState] = useState<{
 		isLoading: boolean;
-		data: [];
+		data: T | null;
 		error: null | string;
 	}>({
 		isLoading: true,
-		data: [],
+		data: null,
 		error: null,
 	});
 

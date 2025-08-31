@@ -16,7 +16,7 @@ import Image from "next/image";
 const columns = ["Id", "Name", "Description", "Logo", ""];
 
 export default function BrandsPage() {
-	const { data, isLoading, refetch } = useFetch(
+	const { data, isLoading, refetch } = useFetch<Brand[]>(
 		config.apiBaseUrl + "/brands"
 	);
 	const {
@@ -48,11 +48,11 @@ export default function BrandsPage() {
 			<PageHeader title="Brands" onAdd={toggleAddModal} />
 
 			{isLoading && <Spinner />}
-			{!isLoading && data.length == 0 && <NoData />}
-			{data.length > 0 && (
+			{!isLoading && data && data.length == 0 && <NoData />}
+			{data && data.length > 0 && (
 				<Table
 					columns={columns}
-					rows={data.map((item: Brand) => [
+					rows={data.map((item) => [
 						item.id,
 						item.name,
 						item.description,

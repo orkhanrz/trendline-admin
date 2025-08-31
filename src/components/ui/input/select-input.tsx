@@ -51,7 +51,7 @@ export default function SelectInput({
 				</button>
 
 				{isOpen && options.length > 0 && (
-					<ul className="absolute bg-white w-full border rounded-md top-12 left-0 overflow-hidden">
+					<ul className="absolute bg-white w-full border rounded-md top-12 left-0 overflow-hidden z-20">
 						{options.map((option) => (
 							<li
 								onClick={() => onSelect(option.id)}

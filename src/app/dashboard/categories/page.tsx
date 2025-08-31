@@ -16,7 +16,7 @@ import { Category } from "@/types";
 const columns: string[] = ["Id", "Name", "Parenty category id", ""];
 
 export default function CategoriesPage() {
-	const { data, isLoading, refetch } = useFetch(
+	const { data, isLoading, refetch } = useFetch<Category[]>(
 		config.apiBaseUrl + "/categories"
 	);
 	const {
@@ -47,8 +47,8 @@ export default function CategoriesPage() {
 		<>
 			<PageHeader title="Categories" onAdd={toggleAddModal} />
 			{isLoading && <Spinner />}
-			{!isLoading && data.length == 0 && <NoData />}
-			{data.length > 0 && (
+			{!isLoading && data && data.length == 0 && <NoData />}
+			{data && data.length > 0 && (
 				<Table
 					columns={columns}
 					rows={data.map((item: Category) => [

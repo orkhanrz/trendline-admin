@@ -24,3 +24,31 @@ export interface CreateOrEditCategory {
 	name: string;
 	parentCategoryId?: string | null;
 }
+
+export interface Product {
+	id: string;
+	name: string;
+	gender: string;
+	brandId: string;
+	brandName: string;
+	categoryId: string;
+	categoryName: string;
+	description: string;
+	attributeName: string;
+	sizeAttributeName: string;
+	isInStock: boolean;
+	isDeleted: boolean;
+}
+
+export interface CreateOrEditProduct {
+	id?: string;
+	name: string;
+	brandId: string;
+	categoryId: string;
+	gender: string;
+	isInStock?: boolean;
+	isDeleted?: boolean;
+	description: string;
+	attributeName: string;
+	sizeAttributeName: string;
+}

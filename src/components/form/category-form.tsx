@@ -16,7 +16,9 @@ export default function CategoryForm({
 	refetch,
 	onClose,
 }: CategoryFormProps) {
-	const { data } = useFetch(config.apiBaseUrl + "/categories/parents");
+	const { data } = useFetch<Category[]>(
+		config.apiBaseUrl + "/categories/parents"
+	);
 	const [category, setCategory] = useState<CreateOrEditCategory>({
 		id: "",
 		name: "",
@@ -92,9 +94,9 @@ export default function CategoryForm({
 				label="Parent Category Id"
 				name="parentCategoryId"
 				value={category.parentCategoryId}
-				options={data.filter(
-					(option: Category) => option.id != categoryId
-				)}
+				options={
+					data?.filter((option) => option.id != categoryId) || []
+				}
 				onSelect={handleParentCategoryChange}
 				placeHolder="Select Parent Category"
 			/>
