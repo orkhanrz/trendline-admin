@@ -60,9 +60,9 @@ export default function CategoryForm({
 
 		try {
 			if (categoryId) {
-				editCategory(category);
+				await editCategory(category);
 			} else {
-				createCategory(category);
+				await createCategory(category);
 			}
 
 			refetch();
