@@ -1,9 +1,14 @@
 import { config } from "@/constants/config";
 import useFetch from "@/hooks/use-fetch";
+import {
+	createCategory,
+	editCategory,
+	getSingleCategory,
+} from "@/services/category";
+import { Category, CreateOrEditCategory } from "@/types";
 import { useEffect, useState } from "react";
 import Input from "../ui/input/input";
 import SelectInput from "../ui/input/select-input";
-import { Category, CreateOrEditCategory } from "@/types";
 
 type CategoryFormProps = {
 	categoryId?: string;
@@ -26,21 +31,17 @@ export default function CategoryForm({
 	});
 
 	useEffect(() => {
-		async function fetchData() {
-			const response = await fetch(
-				`${config.apiBaseUrl}/categories/${categoryId}`
-			);
-
-			if (!response.ok) {
-				return;
+		async function fetchData(categoryId: string) {
+			try {
+				const data = await getSingleCategory(categoryId);
+				setCategory(data);
+			} catch (err) {
+				console.error(err);
 			}
-
-			const data = await response.json();
-			setCategory(data);
 		}
 
 		if (categoryId) {
-			fetchData();
+			fetchData(categoryId);
 		}
 	}, [categoryId]);
 
@@ -57,26 +58,18 @@ export default function CategoryForm({
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		const formBody = categoryId
-			? category
-			: {
-					id: categoryId,
-					name: category.name,
-					parentCategoryId: category.parentCategoryId,
-			  };
+		try {
+			if (categoryId) {
+				editCategory(category);
+			} else {
+				createCategory(category);
+			}
 
-		const response = await fetch(`${config.apiBaseUrl}/categories`, {
-			method: categoryId ? "PUT" : "POST",
-			body: JSON.stringify(formBody),
-			headers: { "Content-Type": "application/json" },
-		});
-
-		if (!response.ok) {
-			return;
+			refetch();
+			onClose();
+		} catch (err) {
+			console.error(err);
 		}
-
-		refetch();
-		onClose();
 	}
 
 	return (

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
 import { CreateOrEditBrand } from "@/types";
+import { createBrand, editBrand } from "@/services/brand";
 
 type BrandFormProps = {
 	brandId?: string;
@@ -59,25 +60,18 @@ export default function BrandForm({
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		const formData = new FormData();
-		formData.append("name", brand.name);
-		formData.append("description", brand.description);
-		brand.altText && formData.append("altText", brand.altText);
-		brand.id && formData.append("id", brand.id);
-		brand.logoFile &&
-			formData.append("logoFile", brand.logoFile, brand.logoFile.name);
+		try {
+			if (brandId) {
+				await editBrand(brand);
+			} else {
+				await createBrand(brand);
+			}
 
-		const response = await fetch(`${config.apiBaseUrl}/brands`, {
-			method: brandId ? "PUT" : "POST",
-			body: formData,
-		});
-
-		if (!response.ok) {
-			return;
+			refetch();
+			onClose();
+		} catch (err) {
+			console.error(err);
 		}
-
-		refetch();
-		onClose();
 	}
 
 	return (

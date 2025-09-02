@@ -25,7 +25,7 @@ export interface CreateOrEditCategory {
 	parentCategoryId?: string | null;
 }
 
-export interface Product {
+export interface ProductTableItem {
 	id: string;
 	name: string;
 	gender: string;
@@ -40,15 +40,48 @@ export interface Product {
 	isDeleted: boolean;
 }
 
+export interface ProductItem extends ProductTableItem {
+	variants: ProductVariant[];
+}
+
+export interface ProductVariant {
+	id: string;
+	productId: string;
+	color: string;
+	isInStock: boolean;
+	isDeleted: boolean;
+	sizes: ProductVariantSize[];
+}
+
+export interface CreateOrEditProductVariant {
+	mainImageFile: null | File;
+	color: string;
+	mainImageAltText: string;
+	isInStock: boolean;
+	isDeleted: boolean;
+}
+
+export interface ProductVariantSize {
+	id: string;
+	productVariantId: string;
+	size: string;
+	priceAmount: number;
+	oldPriceAmount: number;
+	isInStock: boolean;
+}
+
 export interface CreateOrEditProduct {
 	id?: string;
 	name: string;
 	brandId: string;
 	categoryId: string;
 	gender: string;
-	isInStock?: boolean;
-	isDeleted?: boolean;
 	description: string;
 	attributeName: string;
 	sizeAttributeName: string;
+}
+
+export enum Gender {
+	Male = "Male",
+	Female = "Female",
 }

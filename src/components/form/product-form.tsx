@@ -1,20 +1,18 @@
 import { config } from "@/constants/config";
+import { genders } from "@/constants/options";
 import useFetch from "@/hooks/use-fetch";
-import { Brand, Category, CreateOrEditProduct, Product } from "@/types";
+import { CreateOrEditProduct, ProductVariant } from "@/types";
 import { useEffect, useState } from "react";
 import Input from "../ui/input/input";
 import SelectInput from "../ui/input/select-input";
+import ProductVariants from "../product/product-variants";
+import { createProduct, editProduct } from "@/services/product";
 
 type ProductFormProps = {
 	productId?: string;
 	refetch: () => Promise<void>;
 	onClose: () => void;
 };
-
-const booleanOptions = [
-	{ id: false, name: "No" },
-	{ id: true, name: "Yes" },
-];
 
 export default function ProductForm({
 	productId,
@@ -28,8 +26,7 @@ export default function ProductForm({
 		`${config.apiBaseUrl}/categories`
 	);
 
-	const [product, setProduct] = useState<CreateOrEditProduct>({
-		id: "",
+	const [formValues, setFormValues] = useState<CreateOrEditProduct>({
 		name: "",
 		attributeName: "",
 		brandId: "",
@@ -37,9 +34,9 @@ export default function ProductForm({
 		description: "",
 		gender: "",
 		sizeAttributeName: "",
-		isInStock: false,
-		isDeleted: false,
 	});
+
+	const [variants, setVariants] = useState<ProductVariant[]>([]);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -52,7 +49,19 @@ export default function ProductForm({
 			}
 
 			const data = await response.json();
-			setProduct(data);
+
+			console.log(data);
+
+			setFormValues({
+				name: data.name,
+				attributeName: data.attributeName,
+				brandId: data.brandId,
+				categoryId: data.categoryId,
+				description: data.description,
+				gender: data.gender,
+				sizeAttributeName: data.sizeAttributeName,
+			});
+			setVariants(data.variants);
 		}
 
 		if (productId) {
@@ -63,31 +72,36 @@ export default function ProductForm({
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = e.target;
 
-		setProduct((prev) => ({ ...prev, [name]: value }));
+		setFormValues((prev) => ({ ...prev, [name]: value }));
+	}
+
+	function handleBrandSelect(id: string) {
+		setFormValues((prev) => ({ ...prev, brandId: id }));
+	}
+
+	function handleCategorySelect(id: string) {
+		setFormValues((prev) => ({ ...prev, categoryId: id }));
+	}
+
+	function handleGenderSelect(value: string) {
+		setFormValues((prev) => ({ ...prev, gender: value }));
 	}
 
 	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
-		const formBody = productId
-			? product
-			: {
-					id: productId,
-					name: product.name,
-			  };
+		try {
+			if (productId) {
+				await editProduct(productId, formValues);
+			} else {
+				await createProduct(formValues);
+			}
 
-		const response = await fetch(`${config.apiBaseUrl}/products`, {
-			method: productId ? "PUT" : "POST",
-			body: JSON.stringify(formBody),
-			headers: { "Content-Type": "application/json" },
-		});
-
-		if (!response.ok) {
-			return;
+			refetch();
+			onClose();
+		} catch (err) {
+			console.error(err);
 		}
-
-		refetch();
-		onClose();
 	}
 
 	return (
@@ -97,17 +111,26 @@ export default function ProductForm({
 				placeHolder="Name"
 				name="name"
 				type="text"
-				value={product.name}
+				value={formValues.name}
 				onChange={handleChange}
 			/>
 
 			<Input
+				label="Description"
+				placeHolder="Description"
+				name="description"
+				type="text"
+				value={formValues.description}
+				onChange={handleChange}
+			/>
+
+			<SelectInput
 				label="Gender"
 				placeHolder="Gender"
 				name="gender"
-				type="text"
-				value={product.gender}
-				onChange={handleChange}
+				value={formValues.gender}
+				options={genders}
+				onSelect={handleGenderSelect}
 			/>
 
 			<SelectInput
@@ -115,8 +138,8 @@ export default function ProductForm({
 				placeHolder="Brand Name"
 				name="brandId"
 				options={brands || []}
-				onSelect={() => {}}
-				value={product.brandId}
+				onSelect={handleBrandSelect}
+				value={formValues.brandId}
 			/>
 
 			<SelectInput
@@ -124,26 +147,17 @@ export default function ProductForm({
 				placeHolder="Category Name"
 				name="categoryId"
 				options={categories || []}
-				onSelect={() => {}}
-				value={product.categoryId}
+				onSelect={handleCategorySelect}
+				value={formValues.categoryId}
 			/>
 
-			<SelectInput
-				label="Is in stock"
-				placeHolder="Is in stock"
-				name="isInStock"
-				options={[]}
-				value={product.isInStock ? "Yes" : "No"}
-				onSelect={() => {}}
-			/>
-
-			<SelectInput
-				label="Is deleted"
-				placeHolder="Is deleted"
-				name="isDeleted"
-				options={[]}
-				value={product.isDeleted ? "Yes" : "No"}
-				onSelect={() => {}}
+			<Input
+				label="Attribute Name"
+				placeHolder="Attribute Name"
+				name="attributeName"
+				type="text"
+				value={formValues.attributeName}
+				onChange={handleChange}
 			/>
 
 			<Input
@@ -151,9 +165,13 @@ export default function ProductForm({
 				placeHolder="Size Attribute Name"
 				name="sizeAttributeName"
 				type="text"
-				value={product.sizeAttributeName}
+				value={formValues.sizeAttributeName}
 				onChange={handleChange}
 			/>
+
+			{productId && (
+				<ProductVariants productId={productId} variants={variants} />
+			)}
 
 			<div className="flex justify-center gap-3 my-10">
 				<button

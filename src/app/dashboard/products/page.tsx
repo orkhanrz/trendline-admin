@@ -11,7 +11,8 @@ import TableActions from "@/components/ui/table/table-actions";
 import { config } from "@/constants/config";
 import useActions from "@/hooks/use-actions";
 import useFetch from "@/hooks/use-fetch";
-import { Product } from "@/types";
+import { deleteProduct } from "@/services/product";
+import { ProductTableItem } from "@/types";
 import { useState } from "react";
 
 const columns: string[] = [
@@ -30,7 +31,9 @@ export default function ProductsPage() {
 		pageSize: 50,
 	});
 
-	const { data, isLoading, refetch } = useFetch<{ items: Product[] }>(
+	const { data, isLoading, refetch } = useFetch<{
+		items: ProductTableItem[];
+	}>(
 		`${config.apiBaseUrl}/products?PageNumber=${pagination.pageNumber}&PageSize=${pagination.pageSize}`
 	);
 
@@ -45,49 +48,47 @@ export default function ProductsPage() {
 		setEditItemId,
 	} = useActions();
 
-	async function handleDelete() {
-		const response = await fetch(
-			`${config.apiBaseUrl}/products/${deleteItemId}`,
-			{ method: "DELETE" }
-		);
-		if (!response.ok) {
-			throw new Error("Failed to delete product");
+	async function handleDelete(deleteItemId: string) {
+		try {
+			await deleteProduct(deleteItemId);
+			setDeleteItemId(null);
+			refetch();
+		} catch (err) {
+			console.error(err);
 		}
-
-		setDeleteItemId(null);
-		refetch();
 	}
 
 	return (
 		<>
 			<PageHeader title="Products" onAdd={toggleAddModal} />
 			{isLoading && <Spinner />}
-			{!isLoading && data && data.items?.length == 0 && <NoData />}
-			{data && data.items?.length > 0 && (
+			{!isLoading && data && data.items.length == 0 && <NoData />}
+			{data && data.items.length > 0 && (
 				<Table
 					columns={columns}
-					rows={data.items?.map((item: Product) => [
-						item.id,
-						item.name,
-						item.description,
-						item.brandName,
-						item.categoryName,
-						item.isInStock ? "Yes" : "No",
-						<TableActions
-							key={item.id}
-							itemId={item.id}
-							isInStock={item.isInStock}
-							onDelete={openDeleteModal}
-							onEdit={openEditModal}
-						/>,
-					])}
+					rows={data.items
+						.filter((item) => !item.isDeleted)
+						.map((item: ProductTableItem) => [
+							item.id,
+							item.name,
+							item.description,
+							item.brandName,
+							item.categoryName,
+							item.isInStock ? "Yes" : "No",
+							<TableActions
+								key={item.id}
+								itemId={item.id}
+								onDelete={openDeleteModal}
+								onEdit={openEditModal}
+							/>,
+						])}
 				/>
 			)}
 
 			{deleteItemId && (
 				<DeleteModal
 					onCancel={setDeleteItemId.bind(null, null)}
-					onConfirm={handleDelete}
+					onConfirm={() => handleDelete(deleteItemId)}
 				/>
 			)}
 

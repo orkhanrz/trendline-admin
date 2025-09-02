@@ -1,18 +1,27 @@
 type SpinnerProps = {
 	color?: string;
-	size?: number;
-	border?: number;
+	width?: number;
+	borderWidth?: number;
 };
 
-export default function Spinner({ size, color, border }: SpinnerProps) {
-	const spinnerSize = size || 12;
-	const spinnerColor = color || "blue-500";
-	const spinnerBorder = border || 8;
-	const className = `w-${spinnerSize} h-${spinnerSize} rounded-full border-${spinnerBorder} border-l-${spinnerColor} border-t-${spinnerColor} border-b-${spinnerColor} border-r-transparent animate-spin [animation-duration:500ms]`;
-
+export default function Spinner({
+	width = 48,
+	borderWidth = 8,
+	color = "#2C7FFF",
+}: SpinnerProps) {
 	return (
 		<div className="flex justify-center items-center">
-			<div className={className}></div>
+			<div
+				className="rounded-full animate-spin [animation-duration:500ms]"
+				style={{
+					width: width,
+					aspectRatio: 1,
+					borderWidth: borderWidth,
+					borderStyle: "solid",
+					borderColor: `${color} ${color} ${color} transparent`,
+					marginBlock: width,
+				}}
+			></div>
 		</div>
 	);
 }

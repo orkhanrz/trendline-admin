@@ -11,6 +11,7 @@ import TableActions from "@/components/ui/table/table-actions";
 import { config } from "@/constants/config";
 import useActions from "@/hooks/use-actions";
 import useFetch from "@/hooks/use-fetch";
+import { deleteCategory } from "@/services/category";
 import { Category } from "@/types";
 
 const columns: string[] = ["Id", "Name", "Parenty category id", ""];
@@ -30,17 +31,14 @@ export default function CategoriesPage() {
 		setEditItemId,
 	} = useActions();
 
-	async function handleDelete() {
-		const response = await fetch(
-			`${config.apiBaseUrl}/categories/${deleteItemId}`,
-			{ method: "DELETE" }
-		);
-		if (!response.ok) {
-			throw new Error("Failed to delete category");
+	async function handleDelete(deleteItemId: string) {
+		try {
+			await deleteCategory(deleteItemId);
+			setDeleteItemId(null);
+			refetch();
+		} catch (err) {
+			console.error(err);
 		}
-
-		setDeleteItemId(null);
-		refetch();
 	}
 
 	return (
@@ -68,7 +66,7 @@ export default function CategoriesPage() {
 			{deleteItemId && (
 				<DeleteModal
 					onCancel={setDeleteItemId.bind(null, null)}
-					onConfirm={handleDelete}
+					onConfirm={handleDelete.bind(null, deleteItemId)}
 				/>
 			)}
 

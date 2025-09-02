@@ -10,6 +10,7 @@ import TableActions from "@/components/ui/table/table-actions";
 import { config } from "@/constants/config";
 import useActions from "@/hooks/use-actions";
 import useFetch from "@/hooks/use-fetch";
+import { deleteBrand } from "@/services/brand";
 import { Brand } from "@/types";
 import Image from "next/image";
 
@@ -31,16 +32,13 @@ export default function BrandsPage() {
 	} = useActions();
 
 	async function handleDelete() {
-		const response = await fetch(
-			`${config.apiBaseUrl}/brands/${deleteItemId}`,
-			{ method: "DELETE" }
-		);
-		if (!response.ok) {
-			throw new Error("Failed to delete brand");
+		try {
+			await deleteBrand(deleteItemId!);
+			setDeleteItemId(null);
+			refetch();
+		} catch (err) {
+			console.error(err);
 		}
-
-		setDeleteItemId(null);
-		refetch();
 	}
 
 	return (

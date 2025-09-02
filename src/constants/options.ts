@@ -1,0 +1,10 @@
+export const genders = [
+	{
+		id: "Male",
+		name: "Male",
+	},
+	{
+		id: "Female",
+		name: "Female",
+	},
+];
