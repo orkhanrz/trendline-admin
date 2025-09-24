@@ -13,9 +13,11 @@ const variantsColumns = ["Id", "Product id", "Color", "In Stock", ""];
 export default function ProductVariants({
 	productId,
 	variants,
+	refetch,
 }: {
 	productId: string;
 	variants: ProductVariant[];
+	refetch: () => Promise<void>;
 }) {
 	const {
 		deleteItemId,
@@ -35,6 +37,10 @@ export default function ProductVariants({
 			console.error(err);
 		}
 	}
+
+	const productVariant = variants.find(
+		(variant) => variant.id === editItemId
+	);
 
 	return (
 		<>
@@ -68,17 +74,20 @@ export default function ProductVariants({
 			{isAddModalOpen && (
 				<Modal onClose={toggleAddModal}>
 					<ProductVariantForm
-						onClose={toggleAddModal}
 						productId={productId}
+						onClose={toggleAddModal}
+						refetch={refetch}
 					/>
 				</Modal>
 			)}
 
 			{editItemId && (
-				<Modal onClose={toggleAddModal}>
+				<Modal onClose={setEditItemId.bind(null, null)}>
 					<ProductVariantForm
-						onClose={setEditItemId.bind(null, null)}
 						productId={productId}
+						productVariant={productVariant}
+						onClose={setEditItemId.bind(null, null)}
+						refetch={refetch}
 					/>
 				</Modal>
 			)}

@@ -62,7 +62,7 @@ export default function ProductsPage() {
 		<>
 			<PageHeader title="Products" onAdd={toggleAddModal} />
 			{isLoading && <Spinner />}
-			{!isLoading && data && data.items.length == 0 && <NoData />}
+			{data && data.items.length == 0 && <NoData />}
 			{data && data.items.length > 0 && (
 				<Table
 					columns={columns}

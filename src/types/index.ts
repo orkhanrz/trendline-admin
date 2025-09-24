@@ -10,7 +10,7 @@ export interface CreateOrEditBrand {
 	name: string;
 	description: string;
 	altText: string;
-	logoFile: null | File;
+	logoFile: File | null;
 }
 
 export interface Category {
@@ -51,10 +51,18 @@ export interface ProductVariant {
 	isInStock: boolean;
 	isDeleted: boolean;
 	sizes: ProductVariantSize[];
+	images: ProductVariantImage[];
+}
+
+export interface ProductVariantImage {
+	id: string;
+	productVariantId: string;
+	urn: string;
+	altText: string;
 }
 
 export interface CreateOrEditProductVariant {
-	mainImageFile: null | File;
+	mainImageFile: File | null;
 	color: string;
 	mainImageAltText: string;
 	isInStock: boolean;

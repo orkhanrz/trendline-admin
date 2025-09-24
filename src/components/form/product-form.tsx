@@ -1,12 +1,13 @@
 import { config } from "@/constants/config";
 import { genders } from "@/constants/options";
 import useFetch from "@/hooks/use-fetch";
-import { CreateOrEditProduct, ProductVariant } from "@/types";
+import { CreateOrEditProduct, ProductItem, ProductVariant } from "@/types";
 import { useEffect, useState } from "react";
 import Input from "../ui/input/input";
 import SelectInput from "../ui/input/select-input";
 import ProductVariants from "../product/product-variants";
 import { createProduct, editProduct } from "@/services/product";
+import Spinner from "../ui/spinner";
 
 type ProductFormProps = {
 	productId?: string;
@@ -25,6 +26,11 @@ export default function ProductForm({
 	const { data: categories } = useFetch<{ id: string; name: string }[]>(
 		`${config.apiBaseUrl}/categories`
 	);
+	const {
+		data: product,
+		refetch: refetchProductInfo,
+		isLoading: isProductLoading,
+	} = useFetch<ProductItem>(`${config.apiBaseUrl}/products/${productId}`);
 
 	const [formValues, setFormValues] = useState<CreateOrEditProduct>({
 		name: "",
@@ -39,35 +45,19 @@ export default function ProductForm({
 	const [variants, setVariants] = useState<ProductVariant[]>([]);
 
 	useEffect(() => {
-		async function fetchData() {
-			const response = await fetch(
-				`${config.apiBaseUrl}/products/${productId}`
-			);
-
-			if (!response.ok) {
-				return;
-			}
-
-			const data = await response.json();
-
-			console.log(data);
-
+		if (product) {
 			setFormValues({
-				name: data.name,
-				attributeName: data.attributeName,
-				brandId: data.brandId,
-				categoryId: data.categoryId,
-				description: data.description,
-				gender: data.gender,
-				sizeAttributeName: data.sizeAttributeName,
+				name: product.name,
+				attributeName: product.attributeName,
+				brandId: product.brandId,
+				categoryId: product.categoryId,
+				description: product.description,
+				gender: product.gender,
+				sizeAttributeName: product.sizeAttributeName,
 			});
-			setVariants(data.variants);
+			setVariants(product.variants);
 		}
-
-		if (productId) {
-			fetchData();
-		}
-	}, [productId]);
+	}, [product]);
 
 	function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = e.target;
@@ -97,14 +87,16 @@ export default function ProductForm({
 				await createProduct(formValues);
 			}
 
-			refetch();
+			refetchProductInfo();
 			onClose();
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	return (
+	return productId && isProductLoading ? (
+		<Spinner />
+	) : (
 		<form onSubmit={handleSubmit}>
 			<Input
 				label="Name"
@@ -170,7 +162,11 @@ export default function ProductForm({
 			/>
 
 			{productId && (
-				<ProductVariants productId={productId} variants={variants} />
+				<ProductVariants
+					productId={productId}
+					variants={variants}
+					refetch={refetchProductInfo}
+				/>
 			)}
 
 			<div className="flex justify-center gap-3 my-10">

@@ -1,5 +1,5 @@
 import { config } from "@/constants/config";
-import { CreateOrEditProduct } from "@/types";
+import { CreateOrEditProduct, CreateOrEditProductVariant } from "@/types";
 
 export async function deleteProduct(id: string) {
 	try {
@@ -9,25 +9,6 @@ export async function deleteProduct(id: string) {
 
 		if (!response.ok) {
 			throw new Error("Failed to delete product");
-		}
-	} catch (err) {
-		if (err instanceof Error) {
-			throw new Error(err.message);
-		}
-	}
-}
-
-export async function deleteProductVariant(productId: string, variantId: string) {
-	try {
-		const response = await fetch(
-			`${config.apiBaseUrl}/products/${productId}/variants/${variantId}`,
-			{
-				method: "DELETE",
-			}
-		);
-
-		if (!response.ok) {
-			throw new Error("Failed to delete product variant");
 		}
 	} catch (err) {
 		if (err instanceof Error) {
@@ -70,6 +51,88 @@ export async function editProduct(id: string, product: CreateOrEditProduct) {
 		if (!response.ok) {
 			throw new Error("Failed to edit a product!");
 		}
+	} catch (err) {
+		if (err instanceof Error) {
+			throw new Error(err.message);
+		}
+	}
+}
+
+export async function deleteProductVariant(
+	productId: string,
+	variantId: string
+) {
+	try {
+		const response = await fetch(
+			`${config.apiBaseUrl}/products/${productId}/variants/${variantId}`,
+			{
+				method: "DELETE",
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to delete product variant");
+		}
+	} catch (err) {
+		if (err instanceof Error) {
+			throw new Error(err.message);
+		}
+	}
+}
+
+export async function editProductVariant(
+	productId: string,
+	productVariantId: string,
+	variant: CreateOrEditProductVariant
+) {
+	const { color, isInStock, isDeleted } = variant;
+
+	const formBody = {
+		color,
+		isInStock,
+		isDeleted,
+	};
+
+	try {
+		const response = await fetch(
+			`${config.apiBaseUrl}/products/${productId}/variants/${productVariantId}`,
+			{
+				method: "PUT",
+				body: JSON.stringify(formBody),
+				headers: { "Content-Type": "application/json" },
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to create a variant!");
+		}
+
+		console.log(response);
+	} catch (err) {
+		if (err instanceof Error) {
+			throw new Error(err.message);
+		}
+	}
+}
+
+export async function createProductVariant(
+	productId: string,
+	formData: FormData
+) {
+	try {
+		const response = await fetch(
+			`${config.apiBaseUrl}/products/${productId}/variants`,
+			{
+				method: "POST",
+				body: formData,
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to create a variant!");
+		}
+
+		console.log(response);
 	} catch (err) {
 		if (err instanceof Error) {
 			throw new Error(err.message);
