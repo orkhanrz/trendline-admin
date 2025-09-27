@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export default function useFetch<T>(url: string) {
+export default function useFetch<T>(url: string, enabled: boolean = true) {
 	const [state, setState] = useState<{
 		isLoading: boolean;
 		data: T | null;
@@ -38,8 +38,10 @@ export default function useFetch<T>(url: string) {
 	);
 
 	useEffect(() => {
-		fetchData();
-	}, [fetchData]);
+		if (enabled) {
+			fetchData();
+		}
+	}, [fetchData, enabled]);
 
 	return {
 		data: state.data,

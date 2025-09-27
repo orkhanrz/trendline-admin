@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
 import SelectInput from "../ui/input/select-input";
+import ProductImages from "../product/product-images";
 
 type Props = {
 	productId: string;
@@ -126,6 +127,15 @@ export default function ProductVariantForm({
 				value={String(formBody.isDeleted)}
 				onSelect={() => {}}
 			/>
+
+			{productVariant?.images && (
+				<ProductImages
+					productId={productId}
+					productVariantId={productVariant.id}
+					images={productVariant.images}
+					refetch={refetch}
+				/>
+			)}
 
 			<div className="flex justify-center gap-3 my-10">
 				<button

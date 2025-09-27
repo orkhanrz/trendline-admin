@@ -11,15 +11,10 @@ import Spinner from "../ui/spinner";
 
 type ProductFormProps = {
 	productId?: string;
-	refetch: () => Promise<void>;
 	onClose: () => void;
 };
 
-export default function ProductForm({
-	productId,
-	refetch,
-	onClose,
-}: ProductFormProps) {
+export default function ProductForm({ productId, onClose }: ProductFormProps) {
 	const { data: brands } = useFetch<{ id: string; name: string }[]>(
 		`${config.apiBaseUrl}/brands`
 	);
@@ -30,7 +25,10 @@ export default function ProductForm({
 		data: product,
 		refetch: refetchProductInfo,
 		isLoading: isProductLoading,
-	} = useFetch<ProductItem>(`${config.apiBaseUrl}/products/${productId}`);
+	} = useFetch<ProductItem>(
+		`${config.apiBaseUrl}/products/${productId}`,
+		!!productId
+	);
 
 	const [formValues, setFormValues] = useState<CreateOrEditProduct>({
 		name: "",

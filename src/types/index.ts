@@ -61,6 +61,11 @@ export interface ProductVariantImage {
 	altText: string;
 }
 
+export interface AddProductVariantImageDto {
+	imageFile: File;
+	altText?: string;
+}
+
 export interface CreateOrEditProductVariant {
 	mainImageFile: File | null;
 	color: string;

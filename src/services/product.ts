@@ -139,3 +139,59 @@ export async function createProductVariant(
 		}
 	}
 }
+
+export async function addProductVariantImage(
+	productId: string,
+	productVariantId: string,
+	imageFile: File,
+	altText: string
+) {
+	const formData = new FormData();
+	formData.append("imageFile", imageFile);
+	formData.append("altText", altText);
+
+	try {
+		const response = await fetch(
+			`${config.apiBaseUrl}/products/${productId}/variants/${productVariantId}/images`,
+			{
+				method: "POST",
+				body: formData,
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to create a variant image!");
+		}
+
+		console.log(response);
+	} catch (err) {
+		if (err instanceof Error) {
+			throw new Error(err.message);
+		}
+	}
+}
+
+export async function deleteProductVariantImage(
+	productId: string,
+	productVariantId: string,
+	productVariantImageId: string
+) {
+	try {
+		const response = await fetch(
+			`${config.apiBaseUrl}/products/${productId}/variants/${productVariantId}/images/${productVariantImageId}`,
+			{
+				method: "DELETE",
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error("Failed to delete the variant image!");
+		}
+
+		console.log(response);
+	} catch (err) {
+		if (err instanceof Error) {
+			throw new Error(err.message);
+		}
+	}
+}
