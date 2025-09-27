@@ -1,11 +1,11 @@
 import { createProductVariant, editProductVariant } from "@/services/product";
 import { CreateOrEditProductVariant, ProductVariant } from "@/types";
-import { createImageFile } from "@/utils";
 import { useEffect, useState } from "react";
+import ProductImages from "../product/product-images";
 import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
 import SelectInput from "../ui/input/select-input";
-import ProductImages from "../product/product-images";
+import { config } from "@/constants/config";
 
 type Props = {
 	productId: string;
@@ -31,6 +31,7 @@ export default function ProductVariantForm({
 	onClose,
 	refetch,
 }: Props) {
+	const [previewImage, setPreviewImage] = useState("");
 	const [formBody, setFormBody] = useState<CreateOrEditProductVariant>({
 		color: "",
 		isDeleted: false,
@@ -41,14 +42,15 @@ export default function ProductVariantForm({
 
 	useEffect(() => {
 		if (productVariant) {
-			const mainImageFile = createImageFile(productVariant.images[0].urn);
-
+			setPreviewImage(
+				`${config.minioBaseUrl}/${productVariant.images[0].urn}`
+			);
 			setFormBody({
 				color: productVariant.color,
 				isDeleted: productVariant.isDeleted,
 				isInStock: productVariant.isInStock,
-				mainImageFile: mainImageFile,
 				mainImageAltText: productVariant.images[0].altText,
+				mainImageFile: null,
 			});
 		}
 	}, [productVariant]);
@@ -63,6 +65,8 @@ export default function ProductVariantForm({
 		const file = e.target.files?.[0];
 
 		if (file) {
+			const filePath = URL.createObjectURL(file);
+			setPreviewImage(filePath);
 			setFormBody((prev) => ({ ...prev, mainImageFile: file }));
 		}
 	}
@@ -97,7 +101,7 @@ export default function ProductVariantForm({
 			<FileInput
 				label="Main Image"
 				name="mainImageFile"
-				selectedFile={formBody.mainImageFile}
+				previewImage={previewImage}
 				onChange={handleFileInputChange}
 			/>
 

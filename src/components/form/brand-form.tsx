@@ -4,7 +4,6 @@ import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
 import { CreateOrEditBrand } from "@/types";
 import { createBrand, editBrand } from "@/services/brand";
-import { createImageFile } from "@/utils";
 
 type BrandFormProps = {
 	brandId?: string;
@@ -17,6 +16,7 @@ export default function BrandForm({
 	refetch,
 	onClose,
 }: BrandFormProps) {
+	const [previewImage, setPreviewImage] = useState("");
 	const [brand, setBrand] = useState<CreateOrEditBrand>({
 		id: "",
 		name: "",
@@ -37,6 +37,10 @@ export default function BrandForm({
 
 			const data = await response.json();
 
+			if (data.logoUrl) {
+				setPreviewImage(`${config.minioBaseUrl}/${data.logoUrl}`);
+			}
+
 			setBrand(data);
 		}
 
@@ -55,6 +59,8 @@ export default function BrandForm({
 		const file = e.target.files?.[0];
 
 		if (file) {
+			const filePath = URL.createObjectURL(file);
+			setPreviewImage(filePath);
 			setBrand((prev) => ({ ...prev, logoFile: file }));
 		}
 	}
@@ -107,7 +113,7 @@ export default function BrandForm({
 			<FileInput
 				label="Logo"
 				name="logoFile"
-				selectedFile={brand.logoFile}
+				previewImage={previewImage}
 				onChange={handleFileInputChange}
 			/>
 

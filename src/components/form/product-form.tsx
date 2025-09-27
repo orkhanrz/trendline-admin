@@ -11,10 +11,15 @@ import Spinner from "../ui/spinner";
 
 type ProductFormProps = {
 	productId?: string;
+	refetchProducts: () => Promise<void>;
 	onClose: () => void;
 };
 
-export default function ProductForm({ productId, onClose }: ProductFormProps) {
+export default function ProductForm({
+	productId,
+	refetchProducts,
+	onClose,
+}: ProductFormProps) {
 	const { data: brands } = useFetch<{ id: string; name: string }[]>(
 		`${config.apiBaseUrl}/brands`
 	);
@@ -85,7 +90,7 @@ export default function ProductForm({ productId, onClose }: ProductFormProps) {
 				await createProduct(formValues);
 			}
 
-			refetchProductInfo();
+			refetchProducts();
 			onClose();
 		} catch (err) {
 			console.error(err);

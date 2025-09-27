@@ -7,8 +7,8 @@ type PageHeaderProps = {
 
 export default function PageHeader({ title, onAdd }: PageHeaderProps) {
 	return (
-		<div className="flex justify-between items-center">
-			<h1 className="text-2xl font-bold mb-4">{title}</h1>
+		<div className="flex justify-between items-center mb-4">
+			<h1 className="text-2xl font-bold">{title}</h1>
 			<button type="button" className="cursor-pointer" onClick={onAdd}>
 				<PlusCircle className="text-blue-600" />
 			</button>

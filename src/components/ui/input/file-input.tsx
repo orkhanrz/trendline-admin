@@ -5,14 +5,14 @@ import { useRef } from "react";
 type FileInputProps = {
 	label: string;
 	name: string;
-	selectedFile: File | null;
+	previewImage?: string;
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function FileInput({
 	label,
 	name,
-	selectedFile,
+	previewImage,
 	onChange,
 }: FileInputProps) {
 	const inputRef = useRef<HTMLInputElement | null>(null);
@@ -20,8 +20,6 @@ export default function FileInput({
 	function handleInputClick() {
 		(inputRef.current as HTMLInputElement).click();
 	}
-
-	const imageSrc = selectedFile && URL.createObjectURL(selectedFile);
 
 	return (
 		<div>
@@ -33,13 +31,13 @@ export default function FileInput({
 				className="border border-blue-600 border-dashed rounded-2xl text-center cursor-pointer mb-4 overflow-hidden"
 				onClick={handleInputClick}
 			>
-				{imageSrc ? (
+				{previewImage ? (
 					<div className="relative h-96 mx-auto rounded-lg overflow-hidden">
 						<Image
 							fill
 							objectFit="cover"
-							src={imageSrc}
-							alt={selectedFile.name}
+							src={previewImage}
+							alt={previewImage}
 						/>
 					</div>
 				) : (
@@ -54,9 +52,9 @@ export default function FileInput({
 				)}
 			</div>
 
-			{selectedFile && (
+			{previewImage && (
 				<div className="flex justify-between items-center bg-blue-100 p-3 border-1 border-blue-200 rounded-full relative">
-					<p className="font-semibold">{selectedFile.name}</p>
+					<p className="font-semibold">{previewImage}</p>
 					<div className="text-white bg-blue-700 p-3 rounded-full absolute right-0">
 						<Trash2 size={24} />
 					</div>

@@ -31,7 +31,11 @@ export default function ProductsPage() {
 		pageSize: 50,
 	});
 
-	const { data, isLoading, refetch } = useFetch<{
+	const {
+		data,
+		isLoading,
+		refetch: refetchProducts,
+	} = useFetch<{
 		items: ProductTableItem[];
 	}>(
 		`${config.apiBaseUrl}/products?PageNumber=${pagination.pageNumber}&PageSize=${pagination.pageSize}`
@@ -52,7 +56,7 @@ export default function ProductsPage() {
 		try {
 			await deleteProduct(deleteItemId);
 			setDeleteItemId(null);
-			refetch();
+			refetchProducts();
 		} catch (err) {
 			console.error(err);
 		}
@@ -95,8 +99,8 @@ export default function ProductsPage() {
 			{editItemId && (
 				<Modal onClose={setEditItemId.bind(null, null)}>
 					<ProductForm
-						refetch={refetch}
 						onClose={setEditItemId.bind(null, null)}
+						refetchProducts={refetchProducts}
 						productId={editItemId}
 					/>
 				</Modal>
@@ -104,7 +108,7 @@ export default function ProductsPage() {
 
 			{isAddModalOpen && (
 				<Modal onClose={toggleAddModal}>
-					<ProductForm onClose={toggleAddModal} refetch={refetch} />
+					<ProductForm refetchProducts={refetchProducts} onClose={toggleAddModal} />
 				</Modal>
 			)}
 		</>

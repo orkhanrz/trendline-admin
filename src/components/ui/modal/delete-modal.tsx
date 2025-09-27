@@ -8,7 +8,7 @@ type DeleteModalProps = {
 export default function DeleteModal({ onCancel, onConfirm }: DeleteModalProps) {
 	return (
 		<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-[rgba(0,0,0,0.25)]">
-			<div className="bg-white w-4/12 rounded-md px-4 py-2">
+			<div className="bg-white w-10/12 md:w-6/12 xl:w-3/12 rounded-md px-4 py-2">
 				<header className=" flex items-center justify-end ">
 					<button onClick={onCancel} className="cursor-pointer">
 						<X color="gray" />
