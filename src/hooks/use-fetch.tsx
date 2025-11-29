@@ -1,3 +1,4 @@
+import { apiFetch } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
 
 export default function useFetch<T>(url: string, enabled: boolean = true) {
@@ -14,7 +15,7 @@ export default function useFetch<T>(url: string, enabled: boolean = true) {
 	const fetchData = useCallback(
 		async function () {
 			try {
-				const response = await fetch(url);
+				const response = await apiFetch(url);
 
 				if (!response.ok) {
 					console.log(response);

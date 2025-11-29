@@ -1,9 +1,10 @@
 import { config } from "@/constants/config";
 import { CreateOrEditBrand } from "@/types";
+import { apiFetch } from "@/utils";
 
 export async function deleteBrand(id: string) {
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/brands/${id}`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/brands/${id}`, {
 			method: "DELETE",
 		});
 
@@ -29,7 +30,7 @@ export async function createBrand(brand: CreateOrEditBrand) {
 		formData.append("logoFile", brand.logoFile, brand.logoFile.name);
 
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/brands`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/brands`, {
 			method: "POST",
 			body: formData,
 		});
@@ -54,7 +55,7 @@ export async function editBrand(brand: CreateOrEditBrand) {
 		formData.append("logoFile", brand.logoFile, brand.logoFile.name);
 
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/brands`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/brands`, {
 			method: "PUT",
 			body: formData,
 		});

@@ -1,9 +1,10 @@
 import { config } from "@/constants/config";
 import { CreateOrEditProduct, CreateOrEditProductVariant } from "@/types";
+import { apiFetch } from "@/utils";
 
 export async function deleteProduct(id: string) {
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/products/${id}`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/products/${id}`, {
 			method: "DELETE",
 		});
 
@@ -25,7 +26,7 @@ export async function createProduct(product: CreateOrEditProduct) {
 	);
 
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/products`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/products`, {
 			method: "POST",
 			body: formData,
 		});
@@ -42,7 +43,7 @@ export async function createProduct(product: CreateOrEditProduct) {
 
 export async function editProduct(id: string, product: CreateOrEditProduct) {
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/products/${id}`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/products/${id}`, {
 			method: "PUT",
 			body: JSON.stringify(product),
 			headers: { "Content-Type": "application/json" },
@@ -63,7 +64,7 @@ export async function deleteProductVariant(
 	variantId: string
 ) {
 	try {
-		const response = await fetch(
+		const response = await apiFetch(
 			`${config.apiBaseUrl}/products/${productId}/variants/${variantId}`,
 			{
 				method: "DELETE",
@@ -94,7 +95,7 @@ export async function editProductVariant(
 	};
 
 	try {
-		const response = await fetch(
+		const response = await apiFetch(
 			`${config.apiBaseUrl}/products/${productId}/variants/${productVariantId}`,
 			{
 				method: "PUT",
@@ -120,7 +121,7 @@ export async function createProductVariant(
 	formData: FormData
 ) {
 	try {
-		const response = await fetch(
+		const response = await apiFetch(
 			`${config.apiBaseUrl}/products/${productId}/variants`,
 			{
 				method: "POST",
@@ -151,7 +152,7 @@ export async function addProductVariantImage(
 	formData.append("altText", altText);
 
 	try {
-		const response = await fetch(
+		const response = await apiFetch(
 			`${config.apiBaseUrl}/products/${productId}/variants/${productVariantId}/images`,
 			{
 				method: "POST",
@@ -177,7 +178,7 @@ export async function deleteProductVariantImage(
 	productVariantImageId: string
 ) {
 	try {
-		const response = await fetch(
+		const response = await apiFetch(
 			`${config.apiBaseUrl}/products/${productId}/variants/${productVariantId}/images/${productVariantImageId}`,
 			{
 				method: "DELETE",

@@ -1,9 +1,12 @@
 import { config } from "@/constants/config";
 import { Category, CreateOrEditCategory } from "@/types";
+import { apiFetch } from "@/utils";
 
 export async function getSingleCategory(id: string): Promise<Category> {
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/categories/${id}`);
+		const response = await apiFetch(
+			`${config.apiBaseUrl}/categories/${id}`
+		);
 
 		if (!response.ok) {
 			throw new Error("Failed to fetch category!");
@@ -23,9 +26,12 @@ export async function getSingleCategory(id: string): Promise<Category> {
 
 export async function deleteCategory(id: string) {
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/categories/${id}`, {
-			method: "DELETE",
-		});
+		const response = await apiFetch(
+			`${config.apiBaseUrl}/categories/${id}`,
+			{
+				method: "DELETE",
+			}
+		);
 
 		if (!response.ok) {
 			throw new Error("Failed to delete category");
@@ -44,7 +50,7 @@ export async function createCategory(category: CreateOrEditCategory) {
 			parentCategoryId: category.parentCategoryId,
 		};
 
-		const response = await fetch(`${config.apiBaseUrl}/categories`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/categories`, {
 			method: "POST",
 			body: JSON.stringify(formBody),
 			headers: { "Content-Type": "application/json" },
@@ -62,7 +68,7 @@ export async function createCategory(category: CreateOrEditCategory) {
 
 export async function editCategory(category: CreateOrEditCategory) {
 	try {
-		const response = await fetch(`${config.apiBaseUrl}/categories`, {
+		const response = await apiFetch(`${config.apiBaseUrl}/categories`, {
 			method: "PUT",
 			body: JSON.stringify(category),
 			headers: { "Content-Type": "application/json" },

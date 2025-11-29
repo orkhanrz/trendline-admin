@@ -17,3 +17,15 @@ export function createImageFile(imageUrl: string) {
 
 	return file;
 }
+
+export async function apiFetch(url: string, options?: RequestInit) {
+	const response = await fetch(url, { credentials: "include", ...options });
+
+	console.log(response);
+
+	if (response.status == 401) {
+		window.location.href = "/";
+	}
+
+	return response;
+}

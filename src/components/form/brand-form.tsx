@@ -4,6 +4,7 @@ import FileInput from "../ui/input/file-input";
 import Input from "../ui/input/input";
 import { CreateOrEditBrand } from "@/types";
 import { createBrand, editBrand } from "@/services/brand";
+import { apiFetch } from "@/utils";
 
 type BrandFormProps = {
 	brandId?: string;
@@ -27,7 +28,7 @@ export default function BrandForm({
 
 	useEffect(() => {
 		async function fetchData() {
-			const response = await fetch(
+			const response = await apiFetch(
 				`${config.apiBaseUrl}/brands/${brandId}`
 			);
 

@@ -1,39 +1,31 @@
 "use client";
-import { config } from "@/constants/config";
+import { login } from "@/services/auth";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginForm() {
 	const [error, setError] = useState<null | string>(null);
-	const [form, setForm] = useState({ email: "", password: "" });
+	const [formBody, setFormBody] = useState({ email: "", password: "" });
+	const router = useRouter();
 
 	function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const { name, value } = event.target;
-		setForm((prev) => ({ ...prev, [name]: value }));
+		setFormBody((prev) => ({ ...prev, [name]: value }));
+	}
+
+	function handleResetError() {
+		setError(null);
 	}
 
 	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
 		try {
-			const response = await fetch(`${config.apiBaseUrl}/users/login`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(form),
-			});
-
-			const data = await response.json();
-
-			if (data.status != 200 || data.status != 201) {
-				return setError(data.detail || data.title);
-			}
-
-			console.log(data);
-		} catch (error) {
-			if (error instanceof Error) {
-				setError(error.message || "An error occurred.");
-			}
+			await login(formBody);
+			router.push("/dashboard");
+		} catch (err: any) {
+			console.log(err.message);
+			setError(err.message || "An unexpected error occurred");
 		}
 	}
 
@@ -41,6 +33,7 @@ export default function LoginForm() {
 		<form
 			className="bg-white shadow-sm border-0 rounded-xl p-6 w-md mx-8"
 			onSubmit={handleSubmit}
+			onClick={handleResetError}
 		>
 			<h1 className="text-3xl font-medium text-center mb-6">Login</h1>
 
@@ -51,7 +44,7 @@ export default function LoginForm() {
 				placeholder="Email"
 				required
 				className="block w-full mb-4 border-1 border-gray-300 p-2 rounded-md outline-none px-4 focus:border-blue-500"
-				value={form.email}
+				value={formBody.email}
 				onChange={handleChange}
 			/>
 
@@ -62,7 +55,7 @@ export default function LoginForm() {
 				placeholder="Password"
 				required
 				className="block w-full mb-4 border-1 border-gray-300 p-2 rounded-md outline-none px-4 focus:border-blue-500"
-				value={form.password}
+				value={formBody.password}
 				onChange={handleChange}
 			/>
 
